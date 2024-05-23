@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SBA Awards</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: black;
+            color: gold;
+            margin: 0;
+            padding: 0;
+        }
+        header, footer {
+            background-color: gold;
+            color: black;
+            padding: 10px;
+            text-align: center;
+        }
+        nav {
+            background-color: #222;
+            padding: 10px;
+        }
+        nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        nav ul li {
+            display: inline;
+            margin-right: 10px;
+        }
+        nav ul li a {
+            text-decoration: none;
+            color: gold;
+            padding: 5px 10px;
+            border-radius: 5px;
+        }
+        nav ul li a:hover {
+            background-color: gold;
+            color: black;
+        }
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #111;
+            border-radius: 10px;
+        }
+        .login-signup-form {
+            background-color: #222;
+            padding: 20px;
+            border-radius: 10px;
+        }
+        .login-signup-form button {
+            padding: 10px;
+            margin-bottom: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            background-color: gold;
+            color: black;
+        }
+        .login-signup-form button:hover {
+            background-color: #f7d32e;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        table, th, td {
+            border: 1px solid gold;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #222;
+        }
+        td img {
+            width: 20px;
+            height: 20px;
+            margin-right: 5px;
+        }
+        .blog-archive {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+        .blog-post {
+            background-color: #222;
+            padding: 20px;
+            border-radius: 10px;
+            width: 30%;
+        }
+        .blog-post h3 {
+            margin-top: 0;
+        }
+        .blog-post p {
+            margin: 10px 0;
+        }
+        .blog-post img {
+            width: 100%;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+        .blog-post button {
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            background-color: gold;
+            color: black;
+        }
+        .blog-post button:hover {
+            background-color: #f7d32e;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>SBA Awards</h1>
+</header>
+
+<nav>
+    <ul>
+        <li><a href="voting_website.html">Home</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="contact.html">Contact</a></li>
+        <li><a href="login.html">Login</a></li>
+        <li><a href="signup.html">Signup</a></li>
+        <li><a href="nominate.html">Nominate</a></li> <!-- Add the Nominate page link -->
+    </ul>
+</nav>
+
+<div class="container">
+    <p>SBA Awards (Startups Businesses Africa Awards) is an esteemed event aimed at recognizing and rewarding African startup businesses that demonstrate exceptional innovation, creativity, and impact. By celebrating the entrepreneurial spirit of Africa, SBA Awards strives to inspire and empower the next generation of entrepreneurs, driving economic growth and social development across the continent.</p>
+    
+    <div class="login-signup-form">
+        <button onclick="window.location.href='login.html'">Login</button>
+        <button onclick="window.location.href='signup.html'">Signup</button>
+        <button onclick="window.location.href='voting.php'">Vote</button>
+    </div>
+
+    <h2>Top 10 Candidates</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Company</th>
+                <th>Founder</th>
+                <th>Category</th>
+                <th>Country</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Milenial Mindset</td>
+                <td>Marcia</td>
+                <td>NGO</td>
+                <td><img src="https://upload.wikimedia.org/wikipedia/commons/a/af/Flag_of_South_Africa.svg" alt="South Africa"> South Africa</td>
+            </tr>
+            <tr>
+                <td>Thagana Solutions</td>
+                <td>Thagana Peters</td>
+                <td>Tech</td>
+                <td><img src="https://upload.wikimedia.org/wikipedia/commons/4/49/Flag_of_Kenya.svg" alt="Kenya"> Kenya</td>
+            </tr>
+            <tr>
+                <td>Safaricom</td>
+                <td>Peter Ndegwa</td>
+                <td>Telcom</td>
+                <td><img src="https://upload.wikimedia.org/wikipedia/commons/4/49/Flag_of_Kenya.svg" alt="Kenya"> Kenya</td>
+            </tr>
+            <tr>
+                <td>Nasha Poem</td>
+                <td>Annie Nasha</td>
+                <td>Publishing</td>
+                <td><img src="https://upload.wikimedia.org/wikipedia/commons/4/49/Flag_of_Kenya.svg" alt="Kenya"> Kenya</td>
+            </tr>
+            <tr>
+                <td>Cdave Music</td>
+                <td>Cdave Honcho</td>
+                <td>Music & Art</td>
+                <td><img src="https://upload.wikimedia.org/wikipedia/commons/4/4e/Flag_of_Uganda.svg" alt="Uganda"> Uganda</td>
+            </tr>
+            <tr>
+                <td>SBA Awards</td>
+                <td>Brian Masifa</td>
+                <td>Events</td>
+                <td><img src="https://upload.wikimedia.org/wikipedia/commons/4/49/Flag_of_Kenya.svg" alt="Kenya"> Kenya</td>
+            </tr>
+            <tr>
+                <td>Hypman Mafi</td>
+                <td>Mafo</td>
+                <td>Entertainment</td>
+                <td><img src="https://upload.wikimedia.org/wikipedia/commons/7/79/Flag_of_Nigeria.svg" alt="Nigeria"> Nigeria</td>
+            </tr>
+            <tr>
+                <td>WCB</td>
+                <td>Chibu Dangote</td>
+                <td>Entertainment</td>
+                <td><img src="https://upload.wikimedia.org/wikipedia/commons/3/38/Flag_of_Tanzania.svg" alt="Tanzania"> Tanzania</td>
+            </tr>
+            <tr>
+                <td>Pen Publishers</td>
+                <td>Wamwanda</td>
+                <td>Publishing</td>
+                <td><img src="https://upload.wikimedia.org/wikipedia/commons/4/49/Flag_of_Kenya.svg" alt="Kenya"> Kenya</td>
+            </tr>
+            <tr>
+                <td>XFM</td>
+                <td>Likkle Bangi</td>
+                <td>Music & Art</td>
+                <td><img src="https://upload.wikimedia.org/wikipedia/commons/4/4e/Flag_of_Uganda.svg" alt="Uganda"> Uganda</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>Recent Articles</h2>
+    <div class="blog-archive">
+        <div class="blog-post">
+            <img src="https://via.placeholder.com/150" alt="Blog Post 1">
+            <h3>Blog Post 1</h3>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam.</p>
+            <button onclick="window.location.href='blog1.html'">Read More</button>
+        </div>
+        <div class="blog-post">
+            <img src="https://via.placeholder.com/150" alt="Blog Post 2">
+            <h3>Blog Post 2</h3>
+            <p>Suspendisse potenti. Sed dignissim lacinia nunc. Curabitur tortor. Pellentesque nibh. Aenean quam. In scelerisque sem at dolor.</p>
+            <button onclick="window.location.href='blog2.html'">Read More</button>
+        </div>
+        <div class="blog-post">
+            <img src="https://via.placeholder.com/150" alt="Blog Post 3">
+            <h3>Blog Post 3</h3>
+            <p>Maecenas mattis. Sed convallis tristique sem. Proin ut ligula vel nunc egestas porttitor. Morbi lectus risus, iaculis vel, suscipit quis, luctus</p>
+            <button onclick="window.location.href='blog3.html'">Read More</button>
+        </div>
+    </div>
+</div>
+
+<footer>
+    <p>&copy; 2024 SBA Awards</p>
+</footer>
+
+</body>
+</html>
