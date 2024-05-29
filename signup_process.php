@@ -56,9 +56,12 @@ function sendOTPEmail($email, $username, $otp) {
 
         // Content
         $mail->isHTML(true); // Set email format to HTML
-        $mail->Subject = 'Your OTP Code';
-        $mail->Body    = "Your OTP code is <b>$otp</b>";
-        $mail->AltBody = "Your OTP code is $otp";
+        $mail->Subject = 'Welcome to SBA Awards - Your OTP Code';
+        $mail->Body    = "<p>Hello <b>$username</b>,</p>
+                          <p>Welcome to SBA Awards! We're excited to have you join our community.</p>
+                          <p>Your OTP code is <b>$otp</b></p>
+                          <p>Best regards,<br>SBA Awards Team</p>";
+        $mail->AltBody = "Hello $username,\n\nWelcome to SBA Awards! We're excited to have you join our community.\n\nYour OTP code is $otp\n\nBest regards,\nSBA Awards Team";
 
         $mail->send();
         return "OTP has been sent to $email";
@@ -83,8 +86,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['username'], $_POST['em
         // Generate OTP
         $otp = generateOTP();
 
-        // Insert data into database
-        $sql = "INSERT INTO users (username, email, password, otp) VALUES ('$username', '$email', '$password', '$otp')";
+        // Insert data into database with status 'pending'
+        $sql = "INSERT INTO users (username, email, password, otp, status) VALUES ('$username', '$email', '$password', '$otp', 'pending')";
 
         if ($conn->query($sql) === TRUE) {
             $otpSentMessage = sendOTPEmail($email, $username, $otp);
