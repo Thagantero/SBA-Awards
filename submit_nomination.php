@@ -1,8 +1,8 @@
 <?php
 $servername = "localhost";
 $username = "root"; // default WAMP server username
-$password = ""; // default WAMP server password
-$dbname = "sba_awards";
+$password = "starbecky"; // default WAMP server password
+$dbname = "sba-awards";
 
 // Create connection
 $conn = new mysqli($servername, $username, $password, $dbname);
@@ -52,4 +52,3 @@ if ($stmt->execute()) {
 
 $stmt->close();
 $conn->close();
-?>

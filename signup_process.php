@@ -2,8 +2,8 @@
 // Database connection parameters
 $servername = "localhost"; // Change this if your database is hosted elsewhere
 $username = "root"; // Change this to your database username
-$password = ""; // Change this to your database password
-$dbname = "signup_db"; // Change this to your database name
+$password = "starbecky"; // Change this to your database password
+$dbname = "sba-awards"; // Change this to your database name
 
 // Create connection
 $conn = new mysqli($servername, $username, $password, $dbname);
@@ -16,12 +16,14 @@ if ($conn->connect_error) {
 // Check if the form is submitted
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Retrieve form data
-    $username = $_POST['username'];
-    $email = $_POST['email'];
-    $password = $_POST['password'];
+    $firstname = $_POST['FirstName'];
+    $secondname = $_POST['SecondName'];
+    $username = $_POST['Username'];
+    $email = $_POST['Email'];
+    $password = $_POST['Password'];
 
     // SQL query to insert data into the database
-    $sql = "INSERT INTO users (username, email, password) VALUES ('$username', '$email', '$password')";
+    $sql = "INSERT INTO voters (FirstName, SecondName, UserName, Email, Password) VALUES ('$firstname', '$secondname','$username', '$email', '$password')";
 
     // Execute the SQL query
     if ($conn->query($sql) === TRUE) {
@@ -33,4 +35,3 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 // Close the database connection
 $conn->close();
-?>
