@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analytics Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .chart-container {
+            width: 80%;
+            margin: auto;
+            text-align: center;
+        }
+        canvas {
+            margin-bottom: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="chart-container">
+        <h1>Analytics Dashboard</h1>
+        <h2>Page Views Chart</h2>
+        <canvas id="pageViewsChart" width="600" height="400"></canvas>
+        <h2>Visitors vs Page Views Chart</h2>
+        <canvas id="visitorsVsPageViewsChart" width="600" height="400"></canvas>
+        <h2>Geographic Distribution Chart</h2>
+        <canvas id="geographicDistributionChart" width="600" height="400"></canvas>
+        <h2>Device Usage Chart</h2>
+        <canvas id="deviceUsageChart" width="600" height="400"></canvas>
+    </div>
+
+    <footer>
+        <p>&copy; 2024 Your Website</p>
+    </footer>
+
+    <script>
+        // Fetch traffic data from the server
+        fetch('fetch_traffic_data.php')
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    console.error(data.error);
+                } else {
+                    renderCharts(data);
+                }
+            })
+            .catch(error => console.error('Error fetching traffic data:', error));
+
+        function renderCharts(trafficData) {
+            // Page Views Chart
+            const pageViewsCtx = document.getElementById('pageViewsChart').getContext('2d');
+            new Chart(pageViewsCtx, {
+                type: 'line',
+                data: {
+                    labels: trafficData.map(data => data.date),
+                    datasets: [{
+                        label: 'Page Views',
+                        data: trafficData.map(data => data.page_views),
+                        backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                        borderColor: 'rgba(54, 162, 235, 1)',
+                        borderWidth: 1,
+                        yAxisID: 'pageViewsAxis'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    title: {
+                        display: true,
+                        text: 'Page Views Over Time'
+                    },
+                    scales: {
+                        yAxes: [{
+                            id: 'pageViewsAxis',
+                            type: 'linear',
+                            position: 'left',
+                            ticks: {
+                                beginAtZero: true
+                            },
+                            scaleLabel: {
+                                display: true,
+                                labelString: 'Page Views'
+                            }
+                        }]
+                    }
+                }
+            });
+
+            // Visitors vs Page Views Chart
+            const visitorsVsPageViewsCtx = document.getElementById('visitorsVsPageViewsChart').getContext('2d');
+            new Chart(visitorsVsPageViewsCtx, {
+                type: 'bar',
+                data: {
+                    labels: trafficData.map(data => data.date),
+                    datasets: [{
+                        label: 'Page Views',
+                        data: trafficData.map(data => data.page_views),
+                        backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                        borderColor: 'rgba(54, 162, 235, 1)',
+                        borderWidth: 1,
+                        yAxisID: 'pageViewsAxis'
+                    }, {
+                        label: 'Visitors',
+                        data: trafficData.map(data => data.visitors),
+                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        borderWidth: 1,
+                        yAxisID: 'visitorsAxis'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    title: {
+                        display: true,
+                        text: 'Visitors vs Page Views'
+                    },
+                    scales: {
+                        yAxes: [{
+                            id: 'pageViewsAxis',
+                            type: 'linear',
+                            position: 'left',
+                            ticks: {
+                                beginAtZero: true
+                            },
+                            scaleLabel: {
+                                display: true,
+                                labelString: 'Page Views'
+                            }
+                        }, {
+                            id: 'visitorsAxis',
+                            type: 'linear',
+                            position: 'right',
+                            ticks: {
+                                beginAtZero: true
+                            },
+                            scaleLabel: {
+                                display: true,
+                                labelString: 'Visitors'
+                            }
+                        }]
+                    }
+                }
+            });
+
+            // Geographic Distribution Chart
+            const geographicDistributionCtx = document.getElementById('geographicDistributionChart').getContext('2d');
+            const countriesData = aggregateData(trafficData, 'countries');
+            new Chart(geographicDistributionCtx, {
+                type: 'pie',
+                data: {
+                    labels: countriesData.map(data => data.label),
+                    datasets: [{
+                        label: 'Countries',
+                        data: countriesData.map(data => data.value),
+                        backgroundColor: countriesData.map((_, index) => `rgba(${index * 30}, ${index * 60}, ${index * 90}, 0.2)`),
+                        borderColor: countriesData.map((_, index) => `rgba(${index * 30}, ${index * 60}, ${index * 90}, 1)`),
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    title: {
+                        display: true,
+                        text: 'Geographic Distribution of Visitors'
+                    }
+                }
+            });
+
+            // Device Usage Chart
+            const deviceUsageCtx = document.getElementById('deviceUsageChart').getContext('2d');
+            const devicesData = aggregateData(trafficData, 'devices');
+            new Chart(deviceUsageCtx, {
+                type: 'pie',
+                data: {
+                    labels: devicesData.map(data => data.label),
+                    datasets: [{
+                        label: 'Devices',
+                        data: devicesData.map(data => data.value),
+                        backgroundColor: devicesData.map((_, index) => `rgba(${index * 30}, ${index * 60}, ${index * 90}, 0.2)`),
+                        borderColor: devicesData.map((_, index) => `rgba(${index * 30}, ${index * 60}, ${index * 90}, 1)`),
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    title: {
+                        display: true,
+                        text: 'Device Usage Statistics'
+                    }
+                }
+            });
+        }
+
+        function aggregateData(data, key) {
+            const aggregated = {};
+            data.forEach(entry => {
+                entry[key].forEach(item => {
+                    if (!aggregated[item.country || item.device || item.page || item.post]) {
+                        aggregated[item.country || item.device || item.page || item.post] = 0;
+                    }
+                    aggregated[item.country || item.device || item.page || item.post] += item.count || item.value;
+                });
+            });
+            return Object.keys(aggregated).map(label => ({ label, value: aggregated[label] }));
+        }
+    </script>
+</body>
+</html>

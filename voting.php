@@ -1,204 +1,362 @@
 <?php
-include('session.php');
-include('dbcon.php');
-include('header.php');
+// Include database connection
+include 'dbConnect.php';
+
+// Check for connection errors
+if ($mysqli->connect_error) {
+    die("Connection failed: " . $mysqli->connect_error);
+}
+
+// Initialize search term
+$searchTerm = isset($_GET['search']) ? '%' . $mysqli->real_escape_string($_GET['search']) . '%' : '';
+
+// Prepare SQL query to fetch nominees based on search term
+$query = "SELECT * FROM nominees WHERE name LIKE ?";
+$stmt = $mysqli->prepare($query);
+$stmt->bind_param("s", $searchTerm);
+$stmt->execute();
+$result = $stmt->get_result();
+
+// Build HTML for search results
+$searchResults = array();
+
+while ($nominee = $result->fetch_assoc()) {
+    $html = "<div>";
+    $html .= "<h3>" . htmlspecialchars($nominee['name']) . "</h3>";
+    $html .= "<p>Company: " . htmlspecialchars($nominee['companyName']) . "</p>";
+    $html .= "<p>Category: " . htmlspecialchars($nominee['category']) . "</p>";
+    $html .= "<p>Country: " . htmlspecialchars($nominee['country']) . "</p>";
+    $html .= "<button onclick='vote(" . htmlspecialchars($nominee['id']) . ")'>Vote</button>";
+    $html .= "</div>";
+    $searchResults[] = $html;
+}
+
+// If no results found, provide feedback
+if (empty($searchResults)) {
+    echo "<p>No nominees found matching your search.</p>";
+} else {
+    // Output all search results
+    foreach ($searchResults as $resultHtml) {
+        echo $resultHtml;
+    }
+}
+
+$stmt->close();
+
+// Fetch top ten nominees
+$top_ten_query = $mysqli->query("SELECT * FROM nominees ORDER BY votes DESC LIMIT 10");
+
+include 'header.php';
 ?>
-<link rel="stylesheet" type="text/css" href="admin/css/new_style.css" />
-<script src="jquery.iphone-switch.js" type="text/javascript"></script>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="voting.js"></script>
+    <script src="https://kit.fontawesome.com/87ab693041.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="styles.css">
+    <title>SBA Awards - Voting</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: black;
+            color: gold;
+            margin: 0;
+            padding: 0;
+        }
+
+    header, footer {
+        background-color: gold;
+        color: black;
+        padding: 10px;
+        text-align: center;
+    }
+
+    nav {
+        background-color: gold; /* Set header background to gold */
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px;
+        position: fixed; /* Make the header sticky */
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 1000; /* Ensure it stays on top of other content */
+    }
+
+    nav .logo a {
+        text-decoration: none;
+        color: black; /* Changed to match the gold background */
+        font-size: 1.5em;
+    }
+
+    nav ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        align-items: center;
+    }
+
+    nav ul li {
+        margin-right: 10px;
+    }
+
+    nav ul li a {
+        text-decoration: none;
+        color: black; /* Changed to match the gold background */
+        padding: 5px 10px;
+        border-radius: 5px;
+    }
+
+    nav ul li a:hover {
+        background-color: black;
+        color: gold;
+    }
+
+    nav .auth-links {
+        display: flex;
+    }
+
+    nav .auth-links li {
+        margin-right: 0;
+        margin-left: 10px;
+    }
+
+    .spacer {
+        height: 70px; /* Adjust height to match the header height */
+    }
+
+    .container {
+        max-width: 800px;
+        margin: 20px auto; /* Adjust top margin to account for the fixed header */
+        padding: 20px;
+        background-color: #111;
+        border-radius: 10px;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+    }
+
+    table, th, td {
+        border: 1px solid gold;
+    }
+
+    th, td {
+        padding: 10px;
+        text-align: left;
+    }
+
+    th {
+        background-color: #222;
+    }
+
+    td img {
+        width: 20px;
+        height: 20px;
+        margin-right: 5px;
+    }
+
+    /* Increase the width of the name column */
+    th:nth-child(2), td:nth-child(2) {
+        width: 25%; /* Adjust percentage as needed */
+    }
+
+    .search-container {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 10px;
+    }
+
+    .search-box {
+        background-color: white;
+        color: #ffd700;
+        border: 2px solid gold;
+        padding: 5px 10px;
+        border-radius: 5px;
+        flex: 1;
+        margin-right: 10px; /* Add space between search box and button */
+    }
+
+    .search-button {
+        background-color: #ffd700;
+        color: #000;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    .vote-button {
+        background-color: green;
+        color: #fff;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    /* Change link color to gold */
+    a {
+        color: gold;
+        text-decoration: none;
+    }
+
+    a:hover {
+        text-decoration: underline;
+    }
+
+    .countdown {
+        text-align: center;
+        font-size: 24px;
+        margin-bottom: 20px;
+    }
+
+    .countdown div {
+        display: inline-block;
+        margin: 0 10px;
+        background-color: #333;
+        padding: 10px 20px;
+        border-radius: 5px;
+    }
+
+    .countdown div span {
+        display: block;
+        font-size: 18px;
+        color: #ffd700;
+    }
+
+</style>
 </head>
-
 <body>
-    <div class="navbar navbar-fixed-top">
-        <div class="navbar-inner">
-            <div class="container">
+<div class="container">
 
-                <a class="brand">
-                    <img src="admin/images/your_logo.png" width="54" height="54">
-                </a>
-                <a class="brand">
-                    <h2>SBA Awards</h2>
-                    <div class="nav-caption">
-                        <font size="4" color="white">The power of startups to transform economies.</font>
-                    </div>
-                </a>
-
-                <?php include('head.php'); ?>
-
-            </div>
-        </div>
+<div id="countdown" class="countdown">
+    <div>
+        <span id="days">0</span> Days
     </div>
-    <div class="main-wrapper">
-
-        <div class="hero-section">
-            <div class="voting-message">
-                <font color="gold" size="6">"Please Vote Wisely"</font>
-            </div>
-            <div class="help-button">
-                <a class="btn btn-info" id="help" href="help.php"><i class="icon-info-sign icon-large"></i>&nbsp;Help</a>
-            </div>
-        </div>
-        <form method="post" action="vote.php">
-            <div class="candidate-category">
-
-                <!-- NGO Candidates Section -->
-                <div class="hero-candidate-section">
-                    <font color="white">Candidate for NGO</font>
-                </div>
-                <div class="candidate-list">
-                    <div class="candidate-margin">
-                        <?php
-                        $Ngo = mysqli_query($conn, "select * from candidate where Category='Ngo'") or die(mysqli_error($conn));
-                        while ($row = mysqli_fetch_array($Ngo)) {
-                            $Ngo_id = $row['CandidateID']; ?>
-                            <img class="candidate-image" src="<?php echo $row['Photo']; ?>" width="150" height="150" onmouseover="showtrail('<?php echo $row['Photo']; ?>','<?php echo $row['FullName'] ?>',200,5)" onmouseout="hidetrail()">
-                            &nbsp;&nbsp;&nbsp;&nbsp;
-                        <?php } ?>
-                    </div>
-                </div>
-                <div class="select-candidate">
-                    <div class="select-margin">
-                        <select name="Ngo" class="dropdown">
-                            <option class="dropdown-option">--Select Candidate--</option>
-                            <?php
-                            $Ngo = mysqli_query($conn, "select * from candidate where Category='Ngo'") or die(mysqli_error($conn));
-                            while ($row = mysqli_fetch_array($Ngo)) {
-                                $Ngo_id = $row['CandidateID']; ?>
-                                <option value="<?php echo $Ngo_id; ?>" class="dropdown-option">
-                                    <?php echo $row['FullName']; ?></option>
-                            <?php } ?>
-                        </select>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Tech Candidates Section -->
-            <div class="candidate-category">
-                <div class="hero-candidate-section">
-                    <font color="white">Candidate for Tech</font>
-                </div>
-                <div class="candidate-list">
-                    <div class="candidate-margin">
-                        <?php
-                        $Tech = mysqli_query($conn, "select * from candidate where Category='Tech'") or die(mysqli_error($conn));
-                        while ($row = mysqli_fetch_array($Tech)) {
-                            $Tech_id = $row['CandidateID']; ?>
-                            <img class="candidate-image" src="<?php echo $row['Photo']; ?>" width="150" height="150" onmouseover="showtrail('<?php echo $row['Photo']; ?>','<?php echo $row['FullName']; ?>',200,5)" onmouseout="hidetrail()">
-                            &nbsp;&nbsp;&nbsp;&nbsp;
-                        <?php } ?>
-                    </div>
-                </div>
-                <div class="select-candidate">
-                    <div class="select-margin">
-                        <select name="Tech" class="dropdown">
-                            <option class="dropdown-option">--Select Candidate--</option>
-                            <?php
-                            $Tech = mysqli_query($conn, "select * from candidate where Category='Tech'") or die(mysqli_error($conn));
-                            while ($row = mysqli_fetch_array($Tech)) {
-                                $Tech_id = $row['CandidateID']; ?>
-                                <option value="<?php echo $Tech_id; ?>" class="dropdown-option">
-                                    <?php echo $row['FullName']; ?></option>
-                            <?php } ?>
-                        </select>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Telcom Candidates Section -->
-            <div class="candidate-category">
-                <div class="hero-candidate-section">
-                    <font color="white">Candidate for Telcom</font>
-                </div>
-                <div class="candidate-list">
-                    <div class="candidate-margin">
-                        <?php
-                        $Telcom = mysqli_query($conn, "select * from candidate where Category='Telcom'") or die(mysqli_error($conn));
-                        while ($row = mysqli_fetch_array($Telcom)) {
-                            $Telcom_id = $row['CandidateID']; ?>
-                            <img class="candidate-image" src="<?php echo $row['Photo']; ?>" width="70" height="70" onmouseover="showtrail('<?php echo $row['Photo']; ?>','<?php echo $row['FullName']; ?>',200,5)" onmouseout="hidetrail()">
-                            &nbsp;&nbsp;&nbsp;&nbsp;
-                        <?php } ?>
-                    </div>
-                </div>
-                <div class="select-candidate">
-                    <div class="select-margin">
-                        <select name="Telcom" class="dropdown">
-                            <option class="dropdown-option">--Select Candidate--</option>
-                            <?php
-                            $Telcom = mysqli_query($conn, "select * from candidate where Category='Telcom'") or die(mysqli_error($conn));
-                            while ($row = mysqli_fetch_array($Telcom)) {
-                                $Telcom_id = $row['CandidateID']; ?>
-                                <option value="<?php echo $Telcom_id; ?>" class="dropdown-option">
-                                    <?php echo $row['FullName']; ?></option>
-                            <?php } ?>
-                        </select>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Publishing Candidates Section -->
-            <div class="candidate-category">
-                <div class="hero-candidate-section">
-                    <font color="white">Candidate for Publishing</font>
-                </div>
-                <div class="candidate-list">
-                    <div class="candidate-margin">
-                        <?php
-                        $Publishing = mysqli_query($conn, "select * from candidate where Category='Publishing'") or die(mysqli_error($conn));
-                        while ($row = mysqli_fetch_array($Publishing)) {
-                            $Publishing_id = $row['CandidateID']; ?>
-                            <img class="candidate-image" src="<?php echo $row['Photo']; ?>" width="70" height="70" onmouseover="showtrail('<?php echo $row['Photo']; ?>','<?php echo $row['FullName'] ?>',200,5)" onmouseout="hidetrail()">
-                            &nbsp;&nbsp;&nbsp;&nbsp;
-                        <?php } ?>
-                    </div>
-                </div>
-                <div class="select-candidate">
-                    <div class="select-margin">
-                        <select name="Publishing" class="dropdown">
-                            <option class="dropdown-option">--Select Candidate--</option>
-                            <?php
-                            $Publishing = mysqli_query($conn, "select * from candidate where Category='Publishing'") or die(mysqli_error($conn));
-                            while ($row = mysqli_fetch_array($Publishing)) {
-                                $Publishing_id = $row['CandidateID']; ?>
-                                <option value="<?php echo $Publishing_id; ?>" class="dropdown-option">
-                                    <?php echo $row['FullName']; ?></option>
-                            <?php } ?>
-                        </select>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Submit Vote Button -->
-            <div class="submit-section">
-                <button id="submit-vote" class="btn btn-success" name="save"><i class="icon-thumbs-up icon-large"></i>&nbsp;Submit Vote</button>
-            </div>
-
-            <!-- Vote Later Button -->
-            <div class="vote-later-section">
-                <a class="btn" id="vote-later" data-toggle="modal" href="#myModal"><i class="icon-circle-arrow-left icon-large"></i>&nbsp;Vote later</a>
-            </div>
-        </form>
-
-        <div class="footer">
-            <?php include('footer1.php') ?>
-        </div>
+    <div>
+        <span id="hours">0</span> Hours
     </div>
-
-    <div class="modal hide fade" id="myModal">
-        <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal">�</button>
-            <h3> </h3>
-        </div>
-        <div class="modal-body">
-            <p>
-                <font color="gray">Are You Sure you Want to Vote Later?</font>
-            </p>
-        </div>
-        <div class="modal-footer">
-            <a href="#" class="btn" data-dismiss="modal">No</a>
-            <a href="logout_back.php" class="btn btn-success">Yes</a>
-        </div>
+    <div>
+        <span id="minutes">0</span> Minutes
     </div>
+    <div>
+        <span id="seconds">0</span> Seconds
+    </div>
+</div>
+    <div class="search-container">
+    <input type="text" id="search" placeholder="Search nominees..." class="search-box">
+    <button class="search-button" onclick="fetchNominees()">Search</button>
+</div>
+<div id="nominees"></div> <!-- Placeholder for search results -->
+<section id="top-ten">
+    <h2>Top Ten Nominees</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Position</th>
+                <th>Name</th>
+                <th>Company Name</th>
+                <th>Category</th>
+                <th>Country</th>
+                <th>Votes</th>
+                <th>Vote</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php
+            $position = 1;
+            while ($nominee = $top_ten_query->fetch_assoc()) {
+                echo "<tr>";
+                echo "<td>" . $position++ . "</td>";
+                echo "<td><a href='nominee.php?id=" . htmlspecialchars($nominee['id']) . "'>" . htmlspecialchars($nominee['name']) . "</a></td>";
+                echo "<td>" . htmlspecialchars($nominee['companyName']) . "</td>";
+                echo "<td>" . htmlspecialchars($nominee['category']) . "</td>";
+                echo "<td><img src='https://upload.wikimedia.org/wikipedia/commons/4/49/Flag_of_Kenya.svg' alt='Kenya'> " . htmlspecialchars($nominee['country']) . "</td>";
+                echo "<td>" . htmlspecialchars($nominee['votes']) . "</td>";
+                echo "<td><a href='credits.php?nominee_id=" . htmlspecialchars($nominee['id']) . "' class='vote-button'>Vote</a></td>";
+                echo "</tr>";
+            }
+            ?>
+        </tbody>
+    </table>
+</section>
+</div>
+<script>
+function fetchNominees() {
+    const searchQuery = document.getElementById('search').value.trim(); // Trim whitespace
+    if (searchQuery !== '') {
+        const xhr = new XMLHttpRequest();
+        xhr.open('GET', `fetch_nominees.php?search=${encodeURIComponent(searchQuery)}`, true);
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState === XMLHttpRequest.DONE) {
+                if (xhr.status === 200) {
+                    document.getElementById('nominees').innerHTML = xhr.responseText;
+                } else {
+                    console.error('Error fetching nominees:', xhr.status, xhr.statusText);
+                }
+            }
+        };
+        xhr.send();
+    } else {
+        document.getElementById('nominees').innerHTML = ''; // Clear nominees container if search query is empty
+    }
+}
+
+
+    function vote(nomineeId) {
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', 'voting_process.php', true);
+        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
+                // Reload the page to show updated vote counts
+                fetchNominees();
+            }
+        };
+        xhr.send('nominee_id=' + nomineeId);
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        fetchNominees();
+        startCountdown();
+    });
+
+    function startCountdown() {
+        const countdownElement = document.getElementById('countdown');
+        const endDate = new Date('July 31, 2024 23:59:59').getTime();
+
+        const interval = setInterval(() => {
+            const now = new Date().getTime();
+            const distance = endDate - now;
+
+            if (distance < 0) {
+                clearInterval(interval);
+                countdownElement.innerHTML = 'Voting has ended.';
+                return;
+            }
+
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            document.getElementById('days').textContent = days;
+            document.getElementById('hours').textContent = hours;
+            document.getElementById('minutes').textContent = minutes;
+            document.getElementById('seconds').textContent = seconds;
+        }, 1000);
+    }
+</script>
+<!-- Insert Footer -->
+<?php include 'footer.php'; ?>
 
 </body>
-
 </html>

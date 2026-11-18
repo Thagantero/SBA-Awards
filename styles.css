@@ -1,0 +1,228 @@
+/* General resets and box-sizing for all elements */
+*,
+*::before,
+*::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Full width for body and html */
+body, html {
+    width: 100%;
+    height: 100%;
+    font-family: Arial, sans-serif;
+    background-color: black;
+    color: gold;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Container styles */
+.container {
+    width: 100%;
+    max-width: 800px;
+    margin: 80px auto 0;
+    padding: 20px;
+    background-color: #111;
+    border-radius: 10px;
+    flex: 1;
+}
+
+/* Form and input styles */
+form {
+    width: flex;
+}
+
+input[type="text"], input[type="password"], input[type="number"], select, textarea {
+    width: flex; /* Full width of the container */
+    padding: 10px;
+    margin: 10px 0;
+    border: none;
+    border-radius: 5px;
+    box-sizing: border-box; /* Include padding and border in the element's total width and height */
+}
+
+/* Button specific styles */
+button {
+    padding: 10px 20px;
+    margin: 10px 0;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    background-color: gold;
+    color: black;
+    transition: background-color 0.3s ease;
+    width: auto; /* Ensure buttons are not full width */
+    display: inline-block; /* Make buttons inline-block to fit their content */
+}
+
+button:hover {
+    background-color: #f7d32e;
+}
+
+/* Search container styles */
+.search-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 10px 0;
+}
+
+.search-container input[type="text"] {
+    flex: 1;
+    margin-right: 10px;
+    background-color: #fdfcfc;
+    color: #0c0c0c;
+    border: 2px solid gold;
+    padding: 5px 10px;
+    border-radius: 5px;
+}
+
+.search-container button {
+    width: flex; /* Ensure the button is not full width */
+}
+
+/* Header and footer styles */
+header, footer {
+    background-color: gold;
+    color: black;
+    padding: 10px;
+    text-align: center;
+    z-index: 1; /* Ensure header and footer stay above content */
+}
+
+header {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+/* Navigation styles */
+nav {
+    background-color: gold;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+}
+
+nav .logo a {
+    text-decoration: none;
+    color: black;
+    font-size: 1.5em;
+}
+
+nav ul {
+    list-style: none;
+    display: flex;
+    align-items: center;
+}
+
+nav ul li {
+    margin-right: 10px;
+}
+
+nav ul li a {
+    text-decoration: none;
+    color: black;
+    padding: 5px 10px;
+    border-radius: 5px;
+}
+
+nav ul li a:hover {
+    background-color: black;
+    color: gold;
+}
+
+nav .auth-links {
+    display: flex;
+}
+
+nav .auth-links li {
+    margin-right: 10px;
+}
+
+/* Table styles */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+table, th, td {
+    border: 1px solid gold;
+}
+
+th, td {
+    padding: 10px;
+    text-align: left;
+}
+
+th {
+    background-color: #222;
+}
+
+td img {
+    width: 20px;
+    height: 20px;
+    margin-right: 5px;
+}
+
+/* Specific section styles */
+.login-signup-form,
+.profile-info,
+.update-form {
+    background-color: #222;
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+
+.message {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.login-link a {
+    color: gold;
+    text-decoration: underline;
+}
+
+/* Footer styles */
+footer {
+    padding: 10px;
+    text-align: center;
+    width: 100%;
+    margin-top: auto; /* Pushes footer to the bottom of the page */
+    background-color: gold; /* Ensure consistent background color */
+    color: black; /* Ensure consistent text color */
+}
+
+.social-icons {
+    text-align: right;
+    margin-top: 10px;
+}
+
+.social-icons a {
+    margin-left: 10px;
+    color: initial;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.social-icons a:hover {
+    color: rgb(252, 252, 251);
+}
+
+/* Original colors for social media icons */
+.social-icons .fa-twitter { color: #1DA1F2; }
+.social-icons .fa-facebook-f { color: #1877F2; }
+.social-icons .fa-instagram { color: #E1306C; }
+.social-icons .fa-linkedin-in { color: #0077B5; }
+.social-icons .fa-youtube { color: #FF0000; }

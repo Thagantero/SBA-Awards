@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us - SBA Awards</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: black;
+            color: gold;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background-color: gold;
+            color: black;
+            padding: 10px;
+            text-align: center;
+        }
+        header img {
+            max-width: 200px;
+            height: auto;
+            margin: 10px auto;
+            display: block;
+        }
+        nav {
+            background-color: #222;
+            padding: 10px;
+        }
+        nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        nav ul li {
+            display: inline;
+            margin-right: 10px;
+        }
+        nav ul li a {
+            text-decoration: none;
+            color: gold;
+            padding: 5px 10px;
+            border-radius: 5px;
+        }
+        nav ul li a:hover {
+            background-color: gold;
+            color: black;
+        }
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #111;
+            border-radius: 10px;
+            color: gold;
+        }
+        form label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        form input[type="text"],
+        form input[type="email"],
+        form textarea {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid gold;
+            border-radius: 5px;
+            background-color: black;
+            color: gold;
+        }
+        form button[type="submit"] {
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            background-color: gold;
+            color: black;
+        }
+        form button[type="submit"]:hover {
+            background-color: #f7d32e;
+        }
+        footer {
+            background-color: gold;
+            color: black;
+            padding: 10px;
+            text-align: center;
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+
+
+<?php include 'header.php'; ?>
+
+
+<div class="container">
+    <h2>Contact Us</h2>
+    <p>For any inquiries or questions regarding SBA Awards, please fill out the form below:</p>
+    <form action="#" method="POST">
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" required>
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required>
+        <label for="message">Message:</label>
+        <textarea id="message" name="message" rows="4" required></textarea>
+        <button type="submit">Submit</button>
+    </form>
+</div>
+
+
+
+<script>
+    function toggleMenu() {
+        const navLinks = document.querySelector('nav ul');
+        navLinks.classList.toggle('show');
+    }
+</script>
+<?php include 'footer.php'; ?>
+</body>
+</html>

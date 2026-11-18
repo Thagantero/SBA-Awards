@@ -1,8 +1,11 @@
 <?php
-session_start();
-if (!isset($_SESSION['id'])){
+// session.php
 
-header('location:index.php');
-}
-$session_id=$_SESSION['id'];
+// Start the session
+
+
+// Including the session utilities
+require_once 'sessionUtils.php';
+
+// Additional session configurations or initializations can go here
 ?>

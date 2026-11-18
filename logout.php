@@ -1,5 +1,17 @@
 <?php
+// Start session
 session_start();
+
+// Include dbConnect.php
+include 'dbConnect.php';
+
+// Unset all session variables
+$_SESSION = array();
+
+// Destroy the session
 session_destroy();
-header('index.php');
+
+// Redirect to the login page
+header("Location: login.php");
+exit;
 ?>
