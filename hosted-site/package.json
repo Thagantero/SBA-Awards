@@ -1,0 +1,1 @@
+{"name":"sba-awards-site","private":true,"type":"module","scripts":{"build":"node build.mjs"}}

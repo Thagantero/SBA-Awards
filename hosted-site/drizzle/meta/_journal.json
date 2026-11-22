@@ -1,0 +1,76 @@
+{
+  "version": "7",
+  "dialect": "sqlite",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "6",
+      "when": 1795020000000,
+      "tag": "0000_awards",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "6",
+      "when": 1795020001000,
+      "tag": "0001_events_journal",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1795020002000,
+      "tag": "0002_role_dashboards",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "6",
+      "when": 1795020003000,
+      "tag": "0003_rounds_and_verified_accounts",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "6",
+      "when": 1795020004000,
+      "tag": "0004_june_voting",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "6",
+      "when": 1795020005000,
+      "tag": "0005_panel_results",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "6",
+      "when": 1795020006000,
+      "tag": "0006_winner_profiles_and_categories",
+      "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "6",
+      "when": 1795020007000,
+      "tag": "0007_mpesa_test_console",
+      "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "6",
+      "when": 1795020008000,
+      "tag": "0008_admin_analytics",
+      "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "6",
+      "when": 1795020009000,
+      "tag": "0009_mpesa_diagnostic_status",
+      "breakpoints": true
+    }
+  ]
+}
